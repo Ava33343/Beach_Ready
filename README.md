@@ -160,3 +160,5 @@ It follows that the `initial_recommendation` defined under the current `recommen
 * https://docs.aws.amazon.com/lex/latest/dg/gs-cli-publish-bot.html
 * https://docs.aws.amazon.com/lex/latest/dg/fb-bot-association.html
 * https://www.iconfinder.com/
+* CloudApp - Screen Recorder
+* QuickTime Player
