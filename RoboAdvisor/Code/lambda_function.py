@@ -3,6 +3,16 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 ### Functionality Helper Functions ###
+def parse_float(n): # change to float
+    """
+    Securely converts a non-numeric value to float.
+    """
+    try:
+        return float(n)
+    except ValueError:
+        return float("nan")
+    
+
 def parse_int(n):
     """
     Securely converts a non-integer value to integer.
@@ -25,6 +35,50 @@ def build_validation_result(is_valid, violated_slot, message_content):
         "violatedSlot": violated_slot,
         "message": {"contentType": "PlainText", "content": message_content},
     }
+
+    
+def validate_data(age, investment_amount, intent_request):
+    """
+    Validates the data provided by the user.
+    """
+
+    # Validate that the user is 0-65 years old in age
+    if age is not None:
+        age = parse_int(age) 
+        # "parse_int" defined before to return INT
+
+        if age < 0:
+            return build_validation_result(
+                False,
+                "age",
+                "Could you please provide an age greater than 0?"
+                " We will come up with a plan for unborn babies in the future. Thank you for your trust :P"
+            )
+        
+        elif age >= 65:
+            return build_validation_result(
+                False,
+                "age",
+                "Could you please provide an age between 0 and 65?"
+                " Recommendations for the age that you just entered"
+                " will be available in the future. Your patience is greatly appreciated."
+                )
+
+    # Validate the investment amount, it should be >=5000
+    if investment_amount is not None:
+        investment_amount = parse_float(
+            investment_amount
+        )  # Since parameters are strings, it's important to cast values. Function "parse_float" is defined at the beginning
+        if investment_amount < 5000:
+            return build_validation_result(
+                False,
+                "investmentAmount",
+                "Could you provide an investment amount equal to or greater than $5,000, please?"
+                " Investment options for smaller amounts will be available in the future :)"
+            )
+
+    # A True results is returned if age or amount are valid
+    return build_validation_result(True, None, None)
 
 
 ### Dialog Actions Helper Functions ###
@@ -110,6 +164,7 @@ def recommend_portfolio(intent_request):
         # the elicitSlot dialog action is used to re-prompt for the first violation detected.
         if not validation_result["isValid"]:
             slots[validation_result["violatedSlot"]] = None  # Cleans invalid slot
+            
 # Returns an elicitSlot dialog to request new data for the invalid slot
             return elicit_slot(
                 intent_request["sessionAttributes"],
@@ -125,31 +180,42 @@ def recommend_portfolio(intent_request):
         output_session_attributes = intent_request["sessionAttributes"]
 
         return delegate(output_session_attributes, get_slots(intent_request))
-
-    # Get the initial investment recommendation
-    initial_recommendation = get_investment_recommendation(risk_level)
     
     ### YOUR FINAL INVESTMENT RECOMMENDATION CODE STARTS HERE ###
     
-    
+    # define investment portfolio recommendations
+    #def recommended_portfolios(risk):
+    """
+    Responses based on selected risk levels.
+    """
+    risk = {
+        "None": "100% bonds (AGG), 0% equities (SPY)",
+        "Very Low": "80% bonds (AGG), 20% equities (SPY)",
+        "Low": "60% bonds (AGG), 40% equities (SPY)",
+        "Medium": "40% bonds (AGG), 60% equities (SPY)",
+        "High": "20% bonds (AGG), 80% equities (SPY)",
+        "Very High": "0% bonds (AGG), 100% equities (SPY)"
+    }
+    #   return risk[risk_level]
 
-    ### YOUR FINAL INVESTMENT RECOMMENDATION CODE ENDS HERE ###
+# Get the initial investment recommendation
+    initial_recommendation = risk[risk_level]
 
     # Return a message with the initial recommendation based on the risk level.
     return close(
         intent_request["sessionAttributes"],
         "Fulfilled",
-        {
+           {
             "contentType": "PlainText",
             "content": """{} thank you for your information;
-            based on the risk level you defined, my recommendation is to choose an investment portfolio with {}
+            based on your preferred risk, an investment portfolio is customized for you: {}
             """.format(
                 first_name, initial_recommendation
             ),
         },
     )
-
-
+    ### YOUR FINAL INVESTMENT RECOMMENDATION CODE ENDS HERE ###
+    
 ### Intents Dispatcher ###
 def dispatch(intent_request):
     """
