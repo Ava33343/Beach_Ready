@@ -114,7 +114,7 @@ Overview on Amazon Lex (click me):
 
 ## **Next Steps**
 
-* _**Construct post-confirmation intents use `get_slots` on `riskLevel` responses. The Confirmation Prompt box was unchecked on Amazon Lex intent builder as it "short-circuit" the trigger to select `riskLevel`.**_ 
+* _**Construct post-confirmation intents using `get_slots` on `riskLevel` responses. In the current version, the `Confirmation Prompt` box was unchecked on Amazon Lex intent builder as it "short-circuit" the trigger to select `riskLevel`.**_ 
     * If ordering becomes an issue, define a separate function `recommended_portfolios(risk)` shown below could be an alternative to the current risk dictionary defined under the function `recommend_portfolio(intent_request)`:
 <details><summary>
 Click me for details on an alternative function:
@@ -143,6 +143,11 @@ It follows that the `initial_recommendation` defined under the current `recommen
     initial_recommendation = recommended_portfolios(risk)
 ```
 </details>
+
+* _**Add additional slots to respond based on feedbacks**_
+    * Allow customers to go back and re-select their risk levels
+    * Provide more customized recommendations, e.g. more variety under each `riskLevel`
+
 
 * _**Deploy RoboAdvisor on Facebook or Slack on `Channels` tab using Amazon Lex Documentations**_
     * Graphic analyzers are available under `Monitoring` tab on Lex
