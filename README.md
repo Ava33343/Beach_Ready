@@ -1,6 +1,6 @@
 # Beach Ready!
 
-## **Sailing for An Early Retirement!**
+## _**Sailing for An Early Retirement!**_
 _**Option 1: Robo Advisor for Retirement Plans**_
 
 A bot **RoboAdvisor** is built for retirement planning on Amazon Lex.
